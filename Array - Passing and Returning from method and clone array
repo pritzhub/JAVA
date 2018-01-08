@@ -1,0 +1,69 @@
+//Passing Arrays from methods
+class Test
+{   
+    // Driver method
+    public static void main(String args[]) 
+    {
+        int arr[] = {3, 1, 2, 5, 4};
+         
+        // passing array to method m1
+        sum(arr);
+     
+    }
+ 
+    public static void sum(int[] arr) 
+    {
+        // getting sum of array values
+        int sum = 0;
+         
+        for (int i = 0; i < arr.length; i++)
+            sum+=arr[i];
+         
+        System.out.println("sum of array values : " + sum);
+    }
+}
+
+//Returning Arrays from Methods
+
+//As usual, a method can also return an array. For example, below program returns an array from method m1.
+
+// Java program to demonstrate 
+// return of array from method
+ 
+class Test
+{   
+    // Driver method
+    public static void main(String args[]) 
+    {
+        int arr[] = m1();
+         
+        for (int i = 0; i < arr.length; i++)
+            System.out.print(arr[i]+" ");
+     
+    }
+ 
+    public static int[] m1() 
+    {
+        // returning  array
+        return new int[]{1,2,3};
+    }
+}
+
+//Clone an array
+class Test
+{   
+    public static void main(String args[]) 
+    {
+        int intArray[] = {1,2,3};
+         
+        int cloneArray[] = intArray.clone();
+         
+        // will print false as deep copy is created
+        // for one-dimensional array
+        System.out.println(intArray == cloneArray);
+         
+        for (int i = 0; i < cloneArray.length; i++) {
+            System.out.print(cloneArray[i]+" ");
+        }
+    }
+}
