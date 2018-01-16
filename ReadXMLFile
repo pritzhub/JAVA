@@ -1,0 +1,74 @@
+/* sample of XML file
+<?xml version="1.0"?>
+<measurements>
+    <deviceid id="deviceid101">
+        <pathname>devivepathname is</pathname>
+        <measurementname>measurementname is</measurementname>
+		<measurementtimestamp>2018-01-04</measurementtimestamp>
+		<measurementdesc>measurementdesc is</measurementdesc>
+		<measurementvalue>105</measurementvalue>
+        <measurementquality>excellent</measurementquality>
+    </deviceid>
+    <deviceid id="deviceid102">
+        <pathname>devivepathname 2 is</pathname>
+        <measurementname>measurementname 2 is</measurementname>
+		<measurementtimestamp>2018-01-05</measurementtimestamp>
+		<measurementdesc>measurementdesc 2 is</measurementdesc>
+		<measurementvalue>110</measurementvalue>
+        <measurementquality>awesome</measurementquality>
+    </deviceid>
+</measurements>
+*/
+// JAVA Code
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
+import java.io.File;
+
+public class ReadXMLFile {
+
+  public static void main(String argv[]) {
+    try {
+    File fXmlFile = new File("measures.xml");
+    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+    Document doc = dBuilder.parse(fXmlFile);
+    doc.getDocumentElement().normalize();
+
+    System.out.println("Root element is :" + doc.getDocumentElement().getNodeName());
+    NodeList nList = doc.getElementsByTagName("deviceid");
+    System.out.println("----------------------------");
+
+    for (int temp = 0; temp < nList.getLength(); temp++) {
+        Node nNode = nList.item(temp);
+        System.out.println("\nCurrent Element :" + nNode.getNodeName());
+        if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+            Element eElement = (Element) nNode;
+            System.out.println("Device id : "
+                               + eElement.getAttribute("id"));
+            System.out.println("Measurement Name : "
+                               + eElement.getElementsByTagName("measurementname")
+                                 .item(0).getTextContent());
+            System.out.println("Measurement timestamp : "
+                               + eElement.getElementsByTagName("measurementtimestamp")
+                                 .item(0).getTextContent());
+            System.out.println("Measurement Description : "
+                               + eElement.getElementsByTagName("measurementdesc")
+                                 .item(0).getTextContent());
+            System.out.println("Measurement Value : "
+                               + eElement.getElementsByTagName("measurementvalue")
+                                 .item(0).getTextContent());
+            System.out.println("Measurement Quality : "
+                    + eElement.getElementsByTagName("measurementquality")
+                      .item(0).getTextContent());            
+        }
+    }
+    } catch (Exception e) {
+    e.printStackTrace();
+    }
+  }
+}
