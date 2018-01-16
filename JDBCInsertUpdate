@@ -1,0 +1,98 @@
+//Bean (Spring Context XML) is defined with connection vars where dbclass is the class id and dbClass is the class anem 
+	<bean id="dbclass" class="package.dbClass">
+                <constructor-arg value="dbname"/>
+                <constructor-arg value="dbusername"/>
+                <constructor-arg value="dbpwd"/>
+                <constructor-arg value="dbhostname"/>
+                <constructor-arg value="dbportname"/>
+        
+    </bean>
+public class dbClass {
+    private final static Logger LOGGER = Logger.getLogger(dbClass.class);
+
+	Connection con=null;
+	 String dbName =null;
+	    String userName = null;
+	    String password = null;
+	    String hostname = null;
+	    String port = null;
+    
+//Constructor of the class
+	public dbClass(String dbName, String userName, String password, String hostname, String port) {
+		try {
+			con = connectToDB(dbName, userName, password,  hostname, port);
+			if(con==null) LOGGER.error("Connection is null");
+			LOGGER.info("Got connection");
+		} catch (Exception e) {
+			LOGGER.error(e);
+		}
+		
+	}
+  
+private Connection connectToDB(String dbName, String userName, String password, String hostname, String port) throws Exception{
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		    String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName + "?user=" + userName + "&password=" + password;
+			
+		    Connection con = DriverManager.getConnection(jdbcUrl);
+		    LOGGER.info("Connection established to the database using URL: "+jdbcUrl);
+			return con;
+		}
+		catch (Exception e){
+			LOGGER.error(e);
+		}
+		
+		return null;
+	}
+  //INSERT record
+	public void postData(Connection con, String tblName, String dvc_id, String path_nm, String meas_nm,
+								Timestamp meas_time, String meas_desc, double meas_val) throws Exception{
+		PreparedStatement insertedrecord =null;
+		try {
+
+			String insertSQL = "INSERT INTO " + tblName + " (DEVICE_ID, PATH_NAME, MEASUREMENT_NAME, " +
+								" MEASUREMENT_TIMESTAMP, MEASUREMENT_DESCRIPTION, VALUE) " +
+								" VALUES('" + dvc_id + "','" + path_nm + "','" + meas_nm +
+								"','" + meas_time + "','" + meas_desc + "'," + meas_val + ")";
+			
+			if(con==null) System.out.println("Connection is null");
+			
+			insertedrecord = con.prepareStatement(insertSQL);
+			insertedrecord.executeUpdate();
+		}
+		catch(Exception e) {
+			LOGGER.error(e);
+		}
+		finally {
+			if(!insertedrecord.isClosed())
+				insertedrecord.close();
+		}
+	}	
+	
+  //UPDATE Record
+	public void manipulateData(Connection con, String tblName, String dvc_id, String path_nm, String meas_nm,
+			Timestamp meas_time, String meas_desc, double meas_val) throws Exception{
+		PreparedStatement updatedrecord =null;
+		try {
+			
+			String updateSQL = 
+			"UPDATE ANALOG_LATEST_VALUES " +
+			"SET PATH_NAME = '" + path_nm + "', " +
+				" MEASUREMENT_NAME = '" + meas_nm + "', " +
+				" MEASUREMENT_TIMESTAMP = '" + meas_time + "', " +
+				" MEASUREMENT_DESCRIPTION = '" + meas_desc + "', " +
+				" VALUE = " + meas_val + 
+			" WHERE DEVICE_ID = '" + dvc_id + "'" + "AND MEASUREMENT_NAME='"+meas_nm+"'";
+			
+			updatedrecord = con.prepareStatement(updateSQL);
+			updatedrecord.executeUpdate();
+		}
+		catch(Exception e) {
+			LOGGER.error(e);
+		}
+		finally {
+			updatedrecord.close();
+		}		
+	}
+  
+}
