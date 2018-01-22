@@ -1,0 +1,96 @@
+AppMain.JAVA
+============
+package com.pritpal;
+
+public class AppMain {
+
+	public static void main(String[] args) {
+		Variables vars = new Variables();
+		vars.setPrivateInt(500);
+		System.out.println("Printing private var from another class using Getter in same pkg: " + vars.getPrivateInt());
+		
+		vars.setAllVars();
+		System.out.println("Printing protected var from another class: " + vars.protectedInt);
+		System.out.println("Printing public var from another class: " + vars.publicInt);
+		System.out.println("Printing noscope var from another class: " + vars.noscopeInt);
+		System.out.println("Printing staticpublic var from another class: " + vars.staticPublicInt);
+		//vars.staticPrivateInt; // Not accessible
+		System.out.println("Printing Constant var from another class: " + vars.CONSTANTINT);
+		
+		vars.protectedInt = 910;
+		vars.publicInt = 920;
+		vars.noscopeInt = 930;
+		vars.staticPublicInt=950;
+		//vars.CONSTANTINT = 9100; constant can't be modified (with FINAL keyword)
+		System.out.println("Printing protected var from another class: " + vars.protectedInt);
+		System.out.println("Printing public var from another class: " + vars.publicInt);
+		System.out.println("Printing noscope var from another class: " + vars.noscopeInt);
+		System.out.println("Printing staticpublic var from another class: " + vars.staticPublicInt);
+
+	}
+
+}
+
+ClassInAnotherPkg.java
+======================
+package com.pritpal.package2;
+
+import com.pritpal.Variables;
+
+public class ClassInAnotherPkg{
+	
+	public static void main(String[] args) {
+		//instance of another class in another package - had to import the class
+		com.pritpal.Variables v = new com.pritpal.Variables();
+		//something strage.. instancing the main method of another class in another package
+		com.pritpal.AppMain am = new com.pritpal.AppMain();
+		v.setPrivateInt(200);
+		System.out.println("Hello there; I am from another package ");
+		System.out.println("Printing private var of another pkg thru getter: " + v.getPrivateInt());
+		v.setAllVars(); // setting and printing var in this class but not all the variables are accessible directly in this package
+		System.out.println("Printing public var of another pkg " + v.publicInt);
+		System.out.println("Printing CONSTANT of another pkg " + v.CONSTANTINT);
+		System.out.println("Printing public static var of another pkg " + v.staticPublicInt);
+		System.out.println("Hello there");
+		am.main(null);
+	}
+	
+}
+
+Variables.java
+==============
+package com.pritpal;
+
+public class Variables {
+	//instance variables
+	
+	private int privateInt; //only accessible in this class; but get be accessed via getter/setter in another class/package
+	protected int protectedInt; //accessible in another class; but not in another package
+	public int publicInt; //accessible in another class/package
+	int noscopeInt; //accessible in another class but not in another package
+	private static int staticPrivateInt; //only accessible in this class - getters/setters can be used in another class/package
+	public static int staticPublicInt; //accessible in another class/package
+	public final static int CONSTANTINT = 100; //accessible in another class/package but can't change the value
+	
+	public int getPrivateInt() {
+		return privateInt;
+	}
+	public void setPrivateInt(int privateInt) {
+		this.privateInt = privateInt;
+	}
+
+	public void setAllVars() {
+		this.privateInt = 5;
+		this.protectedInt = 10;
+		this.publicInt = 20;
+		this.noscopeInt = 30;
+		this.staticPrivateInt = 40;
+		this.staticPublicInt = 50;
+		System.out.println("privateInt " + privateInt);
+		System.out.println("protectedInt " + protectedInt);
+		System.out.println("publicInt " + publicInt);
+		System.out.println("noscopeInt " + noscopeInt);
+		System.out.println("staticPrivateInt " + staticPrivateInt);
+		System.out.println("staticPublicInt " + staticPublicInt);
+	}
+}
